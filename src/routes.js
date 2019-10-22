@@ -5,6 +5,7 @@ const Dashboard = React.lazy(() => import("./views/Dashboard"));
 const Forms = React.lazy(() => import("./views/Forms"));
 const Reclutamiento = React.lazy(() => import("./views/Reclutamiento"));
 
+
 var routes = [];
 
 routes = [
@@ -13,6 +14,7 @@ routes = [
   { path: "/Dashboard", name: "Dashboard", component: Dashboard },
   { path: "/Forms", name: "Forms", component: Forms },
   { path: "/Reclutamiento", name: "Reclutamiento", component: Reclutamiento }
+
 ];
 
 export default routes;

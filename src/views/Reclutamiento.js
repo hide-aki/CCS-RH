@@ -372,10 +372,11 @@ class Llamada_General extends Component {
                       <Input
                         type="date"
                         date-format="dd/mm/yyyy"
-                        placeholder="Fecha Contacto"
+                        placeholder="Fecha Nacimiento"
                         onChange={this.handleChange}
                         id="fecha_nacimiento"
-                        lang="es-MX"
+                        lang="es"
+                        required
                       />
                     </FormGroup>
                   </Col>

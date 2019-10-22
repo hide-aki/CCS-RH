@@ -29,6 +29,20 @@ export default class API_CCS {
       .then(response => response.json());
   }
 
+  async fetchAnonimo(url, options) {
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    };
+
+    return fetch(url, {
+      headers,
+      ...options
+    })
+      .then(this._checkStatus)
+      .then(response => response.json());
+  }
+
   getCampaignAvatar(id) {
     return this.fetch(hostURL + "/v1/Campaigns/Avatar?id=" + id, {
       method: "GET"
@@ -38,6 +52,37 @@ export default class API_CCS {
   }
   getNavigationMenu(user) {
     return this.fetch(hostURL + "/v1/catalogs/menu", {
+      method: "GET"
+    }).then(res => {
+      return Promise.resolve(res);
+    });
+  }
+
+  getColonias(Estado, Municipio) {
+    return this.fetchAnonimo(
+      hostURL +
+        "/v1/catalogs/colonias?estado=" +
+        Estado +
+        "&municipio=" +
+        Municipio,
+      {
+        method: "GET"
+      }
+    ).then(res => {
+      return Promise.resolve(res);
+    });
+  }
+
+  getMunicipios(Estado) {
+    return this.fetchAnonimo(hostURL + "/v1/catalogs/municipios?estado=" + Estado, {
+      method: "GET"
+    }).then(res => {
+      return Promise.resolve(res);
+    });
+  }
+
+  getCP(CP) {
+    return this.fetchAnonimo(hostURL + "/v1/catalogs/codigo_postal/" + CP, {
       method: "GET"
     }).then(res => {
       return Promise.resolve(res);

@@ -16,6 +16,12 @@ const Login = Loadable({
   loading
 });
 
+const Reclu = Loadable({
+  loader: () => import("./views/Reclu"),
+  loading
+});
+
+
 class App extends Component {
   render() {
     return (
@@ -28,6 +34,11 @@ class App extends Component {
               name="Login Page"
               render={props => <Login {...props} />}
             />
+            <Route
+              path="/reclu"
+              name="Reclu"
+              render={props => <Reclu {...props} />}
+            />            
             <Route
               path="/"
               name="Home"
