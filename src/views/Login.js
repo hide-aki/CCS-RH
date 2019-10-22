@@ -18,6 +18,10 @@ import md5 from "md5";
 import AuthService from "../services/AuthService";
 import API_CCS from "../services/API_CCS";
 import splash from "../assets/img/brand/splash.png";
+import {
+  Container as FABContainer,
+  Button as FABButton
+} from "react-floating-action-button";
 
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -95,6 +99,15 @@ class Login extends Component {
   render() {
     return (
       <div className="app flex-row align-items-center">
+        <FABContainer>
+          <FABButton
+            tooltip="Formulario de Reclutamiento"
+            icon="icon-list"
+            rotate={true}
+            onClick={() => (window.location.href = "/Reclutamiento")}
+            styles={{ backgroundColor: "rgba(192,3,39,0.8)", color: "white" }}
+          />
+        </FABContainer>
         <Container>
           <Row className="justify-content-center">
             <Col md="8">
@@ -168,8 +181,7 @@ class Login extends Component {
                       top: "120px",
                       width: "150px",
                       height: "85px",
-                      textShadow: "1px 1px 5px #000000",
-                      
+                      textShadow: "1px 1px 5px #000000"
                     }}
                   >
                     <h4>Reclutamiento</h4>

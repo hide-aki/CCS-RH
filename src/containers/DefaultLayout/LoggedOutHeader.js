@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { AppHeaderDropdown, AppNavbarBrand } from "@coreui/react";
 import logo from "../../assets/img/brand/logo.png";
 import sygnet from "../../assets/img/brand/logo.png";
-import avatar from "../../assets/img/brand/Unknown.jpg";
+import avatar from "../../assets/img/brand/home.png";
 
 const propTypes = {
   children: PropTypes.node

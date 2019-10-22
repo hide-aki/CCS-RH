@@ -16,8 +16,8 @@ const Login = Loadable({
   loading
 });
 
-const Reclu = Loadable({
-  loader: () => import("./views/Reclu"),
+const Reclutamiento = Loadable({
+  loader: () => import("./views/Reclutamiento"),
   loading
 });
 
@@ -35,9 +35,9 @@ class App extends Component {
               render={props => <Login {...props} />}
             />
             <Route
-              path="/reclu"
-              name="Reclu"
-              render={props => <Reclu {...props} />}
+              path="/Reclutamiento"
+              name="Reclutamiento"
+              render={props => <Reclutamiento {...props} />}
             />            
             <Route
               path="/"

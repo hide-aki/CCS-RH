@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Suspense } from "react";
 import {
   Card,
   CardBody,
@@ -8,9 +8,9 @@ import {
   FormGroup,
   Label,
   Input,
-  Form
+  Form,
+  Container
 } from "reactstrap";
-import withAuth from "../services/withAuth";
 import API_CCS from "../services/API_CCS";
 import AuthService from "../services/AuthService";
 import Swal from "sweetalert2";
@@ -18,6 +18,14 @@ import withReactContent from "sweetalert2-react-content";
 import Loader from "react-loader-spinner";
 import { getStyle } from "@coreui/coreui/dist/js/coreui-utilities";
 import Select from "react-select";
+import * as router from "react-router-dom";
+import routes from "../routes";
+import { AppHeader, AppBreadcrumb2 as AppBreadcrumb } from "@coreui/react";
+
+
+const DefaultHeader = React.lazy(() =>
+  import("../containers/DefaultLayout/LoggedOutHeader")
+);
 
 const brandColor = "#fc4669";
 
@@ -301,410 +309,355 @@ class Llamada_General extends Component {
     } else {
       return (
         <div className="animated fadeIn">
-          <Card>
-            <CardHeader className="text-center">Llamada General</CardHeader>
+          <AppHeader fixed>
+            <DefaultHeader />
+          </AppHeader>
 
-            <CardBody>
-              <Form
-                className="form-horizontal"
-                onSubmit={this.handleFormSubmit}
-                innerRef={this.formRef}
-                autoComplete="off"
-              >
-                <Row>
-                  <Col className="col-sm-4">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Nombres</Label>
-                      <Input
-                        type="text"
-                        placeholder="Nombres"
-                        required
-                        onChange={this.handleChange}
-                        id="nombres"
-                      />
-                    </FormGroup>
-                  </Col>
-                  <Col className="col-sm-4">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Paterno</Label>
-                      <Input
-                        type="text"
-                        placeholder="Apellido Paterno"
-                        required
-                        onChange={this.handleChange}
-                        id="paterno"
-                      />
-                    </FormGroup>
-                  </Col>
-                  <Col className="col-sm-4">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Materno</Label>
-                      <Input
-                        type="text"
-                        placeholder="Apellido Materno"
-                        onChange={this.handleChange}
-                        id="materno"
-                      />
-                    </FormGroup>
-                  </Col>
-                </Row>
+          <main className="main">
+   
+            <AppBreadcrumb appRoutes={routes} router={router} />
+            <Container fluid>
+              <Suspense fallback={this.loading()}>
+                <Card>
+                  <CardHeader className="text-center">
+                    Datos Generales
+                  </CardHeader>
 
-                <Row>
-                  <Col className="col-sm-4">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Sexo</Label>
-                      <Input
-                        type="select"
-                        placeholder="Categoría"
-                        required
-                        onChange={this.handleChange}
-                        id="sexo"
-                      >
-                        <option value="">-Selecciona-</option>
-                        <option>Masculino</option>
-                        <option>Femenino</option>
-                      </Input>
-                    </FormGroup>
-                  </Col>
-                  <Col className="col-sm-4">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Fecha de Nacimiento</Label>
-                      <Input
-                        type="date"
-                        date-format="dd/mm/yyyy"
-                        placeholder="Fecha Nacimiento"
-                        onChange={this.handleChange}
-                        id="fecha_nacimiento"
-                        lang="es"
-                        required
-                      />
-                    </FormGroup>
-                  </Col>
-                  <Col className="col-sm-4">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Estado Civil</Label>
-                      <Input
-                        type="select"
-                        placeholder="Categoría"
-                        onChange={this.handleChange}
-                        id="edo_civil"
-                      >
-                        <option value="">-Selecciona-</option>
-                        <option>Casado</option>
-                        <option>Divorciado</option>
-                        <option>Soltero</option>
-                        <option>Union Libre</option>
-                        <option>Viudo</option>
-                      </Input>
-                    </FormGroup>
-                  </Col>
-                </Row>
+                  <CardBody>
+                    <Form
+                      className="form-horizontal"
+                      onSubmit={this.handleFormSubmit}
+                      innerRef={this.formRef}
+                      autoComplete="off"
+                    >
+                      <Row>
+                        <Col className="col-sm-4">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">Nombres</Label>
+                            <Input
+                              type="text"
+                              placeholder="Nombres"
+                              required
+                              onChange={this.handleChange}
+                              id="nombres"
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col className="col-sm-4">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">Paterno</Label>
+                            <Input
+                              type="text"
+                              placeholder="Apellido Paterno"
+                              required
+                              onChange={this.handleChange}
+                              id="paterno"
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col className="col-sm-4">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">Materno</Label>
+                            <Input
+                              type="text"
+                              placeholder="Apellido Materno"
+                              onChange={this.handleChange}
+                              id="materno"
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
 
-                <Row>
-                  <Col className="col-sm-2">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Tipo Vial</Label>
-                      <Input
-                        type="select"
-                        placeholder="Categoría"
-                        onChange={this.handleChange}
-                        id="tipo_vial"
-                      >
-                        <option value="">-Selecciona-</option>
-                        <option>Andador</option>
-                        <option>Autopista</option>
-                        <option>Avenida</option>
-                        <option>Bulevar</option>
-                        <option>Calle</option>
-                        <option>Callejón</option>
-                        <option>Calzada</option>
-                        <option>Camino</option>
-                        <option>Carretera</option>
-                        <option>Cerrada</option>
-                        <option>Circuito</option>
-                        <option>Circunvalación</option>
-                        <option>Diagonal</option>
-                        <option>Eje</option>
-                        <option>Libramiento</option>
-                        <option>Parque</option>
-                        <option>Pasaje</option>
-                        <option>Paseo</option>
-                        <option>Periferico</option>
-                        <option>Plaza</option>
-                        <option>Privada</option>
-                        <option>Prolongación</option>
-                        <option>Retorno</option>
-                        <option>Viaducto</option>
-                        <option>Rinconada</option>
-                        <option>Via</option>
-                      </Input>
-                    </FormGroup>
-                  </Col>
+                      <Row>
+                        <Col className="col-sm-4">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">Sexo</Label>
+                            <Input
+                              type="select"
+                              placeholder="Categoría"
+                              required
+                              onChange={this.handleChange}
+                              id="sexo"
+                            >
+                              <option value="">-Selecciona-</option>
+                              <option>Masculino</option>
+                              <option>Femenino</option>
+                            </Input>
+                          </FormGroup>
+                        </Col>
+                        <Col className="col-sm-4">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">
+                              Fecha de Nacimiento
+                            </Label>
+                            <Input
+                              type="date"
+                              date-format="dd/mm/yyyy"
+                              placeholder="Fecha Nacimiento"
+                              onChange={this.handleChange}
+                              id="fecha_nacimiento"
+                              lang="es"
+                              required
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col className="col-sm-4">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">Estado Civil</Label>
+                            <Input
+                              type="select"
+                              placeholder="Categoría"
+                              onChange={this.handleChange}
+                              id="edo_civil"
+                            >
+                              <option value="">-Selecciona-</option>
+                              <option>Casado</option>
+                              <option>Divorciado</option>
+                              <option>Soltero</option>
+                              <option>Union Libre</option>
+                              <option>Viudo</option>
+                            </Input>
+                          </FormGroup>
+                        </Col>
+                      </Row>
 
-                  <Col className="col-sm-6">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Calle</Label>
-                      <Input
-                        type="text"
-                        placeholder="Calle"
-                        onChange={this.handleChange}
-                        id="calle"
-                      />
-                    </FormGroup>
-                  </Col>
-                  <Col className="col-sm-1">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Exterior</Label>
-                      <Input
-                        type="text"
-                        placeholder="Ext."
-                        onChange={this.handleChange}
-                        id="exterior"
-                      />
-                    </FormGroup>
-                  </Col>
-                  <Col className="col-sm-1">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Interior</Label>
-                      <Input
-                        type="text"
-                        placeholder="Int."
-                        onChange={this.handleChange}
-                        id="interior"
-                      />
-                    </FormGroup>
-                  </Col>
-                </Row>
+                      <Row>
+                        <Col className="col-sm-2">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">Tipo Vial</Label>
+                            <Input
+                              type="select"
+                              placeholder="Categoría"
+                              onChange={this.handleChange}
+                              id="tipo_vial"
+                            >
+                              <option value="">-Selecciona-</option>
+                              <option>Andador</option>
+                              <option>Autopista</option>
+                              <option>Avenida</option>
+                              <option>Boulevard</option>
+                              <option>Calle</option>
+                              <option>Callejón</option>
+                              <option>Calzada</option>
+                              <option>Camino</option>
+                              <option>Carretera</option>
+                              <option>Cerrada</option>
+                              <option>Circuito</option>
+                              <option>Circunvalación</option>
+                              <option>Diagonal</option>
+                              <option>Eje</option>
+                              <option>Libramiento</option>
+                              <option>Parque</option>
+                              <option>Pasaje</option>
+                              <option>Paseo</option>
+                              <option>Periferico</option>
+                              <option>Plaza</option>
+                              <option>Privada</option>
+                              <option>Prolongación</option>
+                              <option>Retorno</option>
+                              <option>Viaducto</option>
+                              <option>Rinconada</option>
+                              <option>Via</option>
+                            </Input>
+                          </FormGroup>
+                        </Col>
 
-                <Row>
-                  <Col className="col-sm-12">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Entre Calles</Label>
-                      <Input
-                        type="text"
-                        placeholder="Entrecalles"
-                        onChange={this.handleChange}
-                        id="entrecalles"
-                      />
-                    </FormGroup>
-                  </Col>
-                </Row>
+                        <Col className="col-sm-6">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">Calle</Label>
+                            <Input
+                              type="text"
+                              placeholder="Calle"
+                              onChange={this.handleChange}
+                              id="calle"
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col className="col-sm-1">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">Exterior</Label>
+                            <Input
+                              type="text"
+                              placeholder="Ext."
+                              onChange={this.handleChange}
+                              id="exterior"
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col className="col-sm-1">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">Interior</Label>
+                            <Input
+                              type="text"
+                              placeholder="Int."
+                              onChange={this.handleChange}
+                              id="interior"
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
 
-                <Row>
-                  <Col className="col-sm-2">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Código Postal</Label>
-                      <Input
-                        type="number"
-                        pattern="[0-9]{10}"
-                        placeholder="CP"
-                        onChange={this.handleChangeCP}
-                        value={this.state.cp}
-                        id="cp"
-                        maxLength="5"
-                      ></Input>
-                    </FormGroup>
-                  </Col>
-                  <Col className="col-sm-3">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Colonia</Label>
-                      <Select
-                        options={this.state.colonias}
-                        styles={customStyles}
-                        isClearable={true}
-                        placeholder={"-Selecciona-"}
-                        theme={theme}
-                        onChange={this.handleChangeColonia}
-                        value={
-                          this.state.colonia === ""
-                            ? null
-                            : {
-                                label: this.state.colonia,
-                                value: this.state.colonia
+                      <Row>
+                        <Col className="col-sm-12">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">Entre Calles</Label>
+                            <Input
+                              type="text"
+                              placeholder="Entrecalles"
+                              onChange={this.handleChange}
+                              id="entrecalles"
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
+
+                      <Row>
+                        <Col className="col-sm-2">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">Código Postal</Label>
+                            <Input
+                              type="number"
+                              pattern="[0-9]{10}"
+                              placeholder="CP"
+                              onChange={this.handleChangeCP}
+                              value={this.state.cp}
+                              id="cp"
+                              maxLength="5"
+                            ></Input>
+                          </FormGroup>
+                        </Col>
+                        <Col className="col-sm-3">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">Colonia</Label>
+                            <Select
+                              options={this.state.colonias}
+                              styles={customStyles}
+                              isClearable={true}
+                              placeholder={"-Selecciona-"}
+                              theme={theme}
+                              onChange={this.handleChangeColonia}
+                              value={
+                                this.state.colonia === ""
+                                  ? null
+                                  : {
+                                      label: this.state.colonia,
+                                      value: this.state.colonia
+                                    }
                               }
-                        }
-                      />
-                    </FormGroup>
-                  </Col>
-                  <Col className="col-sm-3">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Delegación/Municipio</Label>
-                      <Select
-                        options={this.state.municipios}
-                        styles={customStyles}
-                        isClearable={true}
-                        placeholder={"-Selecciona-"}
-                        theme={theme}
-                        onChange={this.handleChangeMunicipio}
-                        value={
-                          this.state.municipio === ""
-                            ? null
-                            : {
-                                label: this.state.municipio,
-                                value: this.state.municipio
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col className="col-sm-3">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">
+                              Delegación/Municipio
+                            </Label>
+                            <Select
+                              options={this.state.municipios}
+                              styles={customStyles}
+                              isClearable={true}
+                              placeholder={"-Selecciona-"}
+                              theme={theme}
+                              onChange={this.handleChangeMunicipio}
+                              value={
+                                this.state.municipio === ""
+                                  ? null
+                                  : {
+                                      label: this.state.municipio,
+                                      value: this.state.municipio
+                                    }
                               }
-                        }
-                      />
-                    </FormGroup>
-                  </Col>
+                            />
+                          </FormGroup>
+                        </Col>
 
-                  <Col className="col-sm-4">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Estado</Label>
-                      <Select
-                        options={estados}
-                        styles={customStyles}
-                        isClearable={true}
-                        placeholder={"-Selecciona-"}
-                        theme={theme}
-                        onChange={this.handleChangeEstado}
-                        value={
-                          this.state.estado === ""
-                            ? null
-                            : {
-                                label: this.state.estado,
-                                value: this.state.estado
+                        <Col className="col-sm-4">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">Estado</Label>
+                            <Select
+                              options={estados}
+                              styles={customStyles}
+                              isClearable={true}
+                              placeholder={"-Selecciona-"}
+                              theme={theme}
+                              onChange={this.handleChangeEstado}
+                              value={
+                                this.state.estado === ""
+                                  ? null
+                                  : {
+                                      label: this.state.estado,
+                                      value: this.state.estado
+                                    }
                               }
-                        }
-                      />
-                      <input
-                        tabIndex={-1}
-                        style={{ opacity: 0, height: 0 }}
-                        onChange={e => {}}
-                        value={this.state.estado}
-                        required={false}
-                      />
-                    </FormGroup>
-                  </Col>
-                </Row>
+                            />
+                            <input
+                              tabIndex={-1}
+                              style={{ opacity: 0, height: 0 }}
+                              onChange={e => {}}
+                              value={this.state.estado}
+                              required={false}
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
 
-                <Row>
-                  <Col className="col-sm-4">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Telefono 1</Label>
-                      <Input
-                        type="text"
-                        pattern="[0-9]{10}"
-                        placeholder="5555555555"
-                        required
-                        onChange={this.handleChange}
-                        id="tel_1"
-                      />
-                    </FormGroup>
-                  </Col>
-                  <Col className="col-sm-2">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Extension</Label>
-                      <Input
-                        type="text"
-                        placeholder="Ext"
-                        onChange={this.handleChange}
-                        id="ext_1"
-                      />
-                    </FormGroup>
-                  </Col>
-                  <Col className="col-sm-4">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Telefono 2</Label>
-                      <Input
-                        type="text"
-                        pattern="[0-9]{10}"
-                        placeholder="5555555555"
-                        onChange={this.handleChange}
-                        id="tel_2"
-                      />
-                    </FormGroup>
-                  </Col>
-                  <Col className="col-sm-2">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Extension</Label>
-                      <Input
-                        type="text"
-                        placeholder="Ext"
-                        onChange={this.handleChange}
-                        id="ext_2"
-                      />
-                    </FormGroup>
-                  </Col>
-                </Row>
+                      <Row>
+                        <Col className="col-sm-4">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">Tel Celular</Label>
+                            <Input
+                              type="text"
+                              pattern="[0-9]{10}"
+                              placeholder="5555555555"
+                              required
+                              onChange={this.handleChange}
+                              id="tel_1"
+                            />
+                          </FormGroup>
+                        </Col>
 
-                <Row>
-                  <Col className="col-sm-6">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Email</Label>
-                      <Input
-                        type="email"
-                        placeholder="Email"
-                        onChange={this.handleChange}
-                        id="email_1"
-                      />
-                    </FormGroup>
-                  </Col>
-                  <Col className="col-sm-6">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Email</Label>
-                      <Input
-                        type="email"
-                        placeholder="Email"
-                        onChange={this.handleChange}
-                        id="email_2"
-                      />
-                    </FormGroup>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col className="col-sm-6">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Status de la Llamada</Label>
-                      <Input
-                        type="select"
-                        placeholder="Tipificacion"
-                        required
-                        onChange={this.handleChange}
-                        id="tip_1"
-                      >
-                        <option value="">-Selecciona-</option>
-                        <option>Alto Pop</option>
-                        <option>Cita</option>
-                        <option>Comentarios</option>
-                        <option>Información General</option>
-                        <option>Llamada de Prueba</option>
-                        <option>Llamada Perdida</option>
-                        <option>Llamó y Colgó</option>
-                        <option>Locales QRO</option>
-                        <option>Niños Jugando</option>
-                        <option>Queja</option>
-                      </Input>
-                    </FormGroup>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col className="col-sm-12">
-                    <FormGroup>
-                      <Label htmlFor="prospecto">Comentarios</Label>
-                      <Input
-                        type="textarea"
-                        required
-                        onChange={this.handleChange}
-                        id="comentarios"
-                      />
-                    </FormGroup>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <button type="submit" className="btn btn-primary">
-                      Guardar
-                    </button>
-                  </Col>
-                </Row>
-              </Form>
-            </CardBody>
-          </Card>
+                        <Col className="col-sm-4">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">Tel Casa</Label>
+                            <Input
+                              type="text"
+                              pattern="[0-9]{10}"
+                              placeholder="5555555555"
+                              onChange={this.handleChange}
+                              id="tel_2"
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col className="col-sm-4">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">Email</Label>
+                            <Input
+                              type="email"
+                              placeholder="Email"
+                              onChange={this.handleChange}
+                              id="email_1"
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
+
+                      <Row>
+                        <Col>
+                          <button type="submit" className="btn btn-primary">
+                            Guardar
+                          </button>
+                        </Col>
+                      </Row>
+                    </Form>
+                  </CardBody>
+                </Card>
+              </Suspense>
+            </Container>
+          </main>
         </div>
       );
     }
   }
 }
 
-export default withAuth(Llamada_General);
+export default Llamada_General;
