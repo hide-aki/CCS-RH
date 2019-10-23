@@ -477,17 +477,15 @@ class Llamada_General extends Component {
           this.setState({ isSaving: false });
         });
     } else {
-
       MySwal.fire({
         title: "Error!",
-        html: "¡Ya te encuentras registrado o tienes un homonimo! <br/> <br/> Notificalo a RRHH",
+        html:
+          "¡Ya te encuentras registrado o tienes un homonimo! <br/> <br/> Notificalo a RRHH",
         type: "error",
         confirmButtonText: "OK",
         confirmButtonColor: "#C00327",
         allowOutsideClick: false
       });
-
-     
 
       this.setState({
         cp: "",
