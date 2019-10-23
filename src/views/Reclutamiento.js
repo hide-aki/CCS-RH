@@ -199,9 +199,16 @@ class Llamada_General extends Component {
         [e.target.id]: e.target.value
       },
       () => {
-        if (control === "CURP" || control === "RFC") {
-        } else {
+        if (
+          control === "nombres" ||
+          control === "paterno" ||
+          control === "materno" ||
+          control === "sexo" ||
+          control === "fecha_nacimiento" ||
+          control === "estadoNacimiento"
+        ) {
           this.conformCURP();
+        } else {
         }
       }
     );
@@ -404,28 +411,68 @@ class Llamada_General extends Component {
 
     this.setState({ isSaving: true });
 
-    MySwal.fire({
-      title: "¡Correcto!",
-      html: "¡Se levanto el guardo el registro correctamente!",
-      type: "success",
-      confirmButtonText: "OK",
-      confirmButtonColor: "#C00327",
-      allowOutsideClick: false
-    });
+    this.API_CCS.insertCandidato(this.state)
+      .then(res => {
+        MySwal.fire({
+          title: "¡Correcto!",
+          html: "¡Se guardó el registro correctamente!",
+          type: "success",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#C00327",
+          allowOutsideClick: false
+        });
 
-    document.getElementById("formReclu").reset();
+        document.getElementById("formReclu").reset();
 
-    this.setState({
-      cp: "",
-      estado: "",
-      municipio: "",
-      colonia: "",
-      municipios: [],
-      colonias: [],
-      estadoNacimiento: "",
-      CURP: "",
-      RFC: ""
-    });
+        this.setState({
+          cp: "",
+          estado: "",
+          municipio: "",
+          colonia: "",
+          municipios: [],
+          colonias: [],
+          estadoNacimiento: "",
+          CURP: "",
+          RFC: "",
+          nombres: "",
+          paterno: "",
+          materno: "",
+          fecha_nacimiento: "",
+          sexo: ""
+        });
+
+        this.setState({ isSaving: false });
+      })
+      .catch(err => {
+        MySwal.fire({
+          title: "Error!",
+          html: "¡Ocurrió un error! <br/> (" + err + ")",
+          type: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#C00327",
+          allowOutsideClick: false
+        });
+
+        document.getElementById("formReclu").reset();
+
+        this.setState({
+          cp: "",
+          estado: "",
+          municipio: "",
+          colonia: "",
+          municipios: [],
+          colonias: [],
+          estadoNacimiento: "",
+          CURP: "",
+          RFC: "",
+          nombres: "",
+          paterno: "",
+          materno: "",
+          fecha_nacimiento: "",
+          sexo: ""
+        });
+        this.setState({ isSaving: false });
+      });
 
     this.setState({ isSaving: false });
   }

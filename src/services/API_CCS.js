@@ -103,4 +103,16 @@ export default class API_CCS {
       return Promise.resolve(res);
     });
   }
+
+  insertCandidato(state) {
+    return this.fetchAnonimo(
+      hostURLProd + "/v1/personal/candidatos",
+      {
+        method: "POST",
+        body: JSON.stringify(state)
+      }
+    ).then(res => {
+      return Promise.resolve(res);
+    });
+  }
 }
