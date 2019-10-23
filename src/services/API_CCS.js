@@ -1,7 +1,8 @@
 import AuthService from "./AuthService";
 
-const hostURL = "https://api.ccscontactcenter.com";
-//const hostURL = 'http://localhost:3020'
+const hostURLProd = "https://api.ccscontactcenter.com";
+// eslint-disable-next-line
+const hostURLDev = "http://localhost:3020";
 
 export default class API_CCS {
   constructor() {
@@ -44,14 +45,14 @@ export default class API_CCS {
   }
 
   getCampaignAvatar(id) {
-    return this.fetch(hostURL + "/v1/Campaigns/Avatar?id=" + id, {
+    return this.fetch(hostURLProd + "/v1/Campaigns/Avatar?id=" + id, {
       method: "GET"
     }).then(res => {
       return Promise.resolve(res);
     });
   }
   getNavigationMenu(user) {
-    return this.fetch(hostURL + "/v1/catalogs/menu", {
+    return this.fetch(hostURLProd + "/v1/catalogs/menu", {
       method: "GET"
     }).then(res => {
       return Promise.resolve(res);
@@ -60,7 +61,7 @@ export default class API_CCS {
 
   getColonias(Estado, Municipio) {
     return this.fetchAnonimo(
-      hostURL +
+      hostURLProd +
         "/v1/catalogs/colonias?estado=" +
         Estado +
         "&municipio=" +
@@ -74,17 +75,31 @@ export default class API_CCS {
   }
 
   getMunicipios(Estado) {
-    return this.fetchAnonimo(hostURL + "/v1/catalogs/municipios?estado=" + Estado, {
+    return this.fetchAnonimo(
+      hostURLProd + "/v1/catalogs/municipios?estado=" + Estado,
+      {
+        method: "GET"
+      }
+    ).then(res => {
+      return Promise.resolve(res);
+    });
+  }
+
+  getCP(CP) {
+    return this.fetchAnonimo(hostURLProd + "/v1/catalogs/codigo_postal/" + CP, {
       method: "GET"
     }).then(res => {
       return Promise.resolve(res);
     });
   }
 
-  getCP(CP) {
-    return this.fetchAnonimo(hostURL + "/v1/catalogs/codigo_postal/" + CP, {
-      method: "GET"
-    }).then(res => {
+  getClaveEstado(Estado) {
+    return this.fetchAnonimo(
+      hostURLProd + "/v1/catalogs/clavesEstados/" + Estado,
+      {
+        method: "GET"
+      }
+    ).then(res => {
       return Promise.resolve(res);
     });
   }

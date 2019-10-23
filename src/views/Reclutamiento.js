@@ -21,7 +21,8 @@ import Select from "react-select";
 import * as router from "react-router-dom";
 import routes from "../routes";
 import { AppHeader, AppBreadcrumb2 as AppBreadcrumb } from "@coreui/react";
-
+import moment from "moment";
+import "moment/locale/es";
 
 const DefaultHeader = React.lazy(() =>
   import("../containers/DefaultLayout/LoggedOutHeader")
@@ -113,39 +114,48 @@ class Llamada_General extends Component {
     this.formRef = React.createRef();
     this.state = {
       isSaving: false,
-      estado: "",
-      municipio: "",
-      municipios: [],
-      colonia: "",
-      colonias: [],
-      cp: "",
-      calle: "",
-      comentarios: "",
-      edo_civil: "",
-      email_1: "",
-      email_2: "",
-      entrecalles: "",
-      ext_1: "",
-      ext_2: "",
-      exterior: "",
-      fecha_nacimiento: "",
-      interior: "",
-      materno: "",
+
       nombres: "",
       paterno: "",
+      materno: "",
       sexo: "",
+      fecha_nacimiento: "",
+      edo_civil: "",
+      CURP: "",
+      RFC: "",
+      NSS: "",
+      dependientes: "",
+      escolaridad: "",
+      tipo_vial: "",
+      calle: "",
+      exterior: "",
+      interior: "",
+      entrecalles: "",
+      cp: "",
+      colonia: "",
+      colonias: [],
+      municipio: "",
+      municipios: [],
+      estado: "",
+      estadoNacimiento: "",
       tel_1: "",
       tel_2: "",
-      tip_1: "",
-      tipo_vial: "",
+      email: "",
+      claveEstado: "DF",
+
       id_user: this.Auth.getProfile().id_ccs
     };
   }
 
   handleChange(e) {
-    this.setState({
-      [e.target.id]: e.target.value
-    });
+    this.setState(
+      {
+        [e.target.id]: e.target.value
+      },
+      () => {
+        this.conformCURP();
+      }
+    );
   }
 
   handleChangeCP = async e => {
@@ -232,6 +242,88 @@ class Llamada_General extends Component {
     }
   };
 
+  handleChangeEstadoNacimiento = e => {
+    try {
+      this.setState({ estadoNacimiento: e.label }, async () => {
+        var edoNac = await this.API_CCS.getClaveEstado(
+          this.state.estadoNacimiento
+        );
+
+        this.setState(
+          {
+            claveEstado: edoNac[0].Clave_CURP
+          },
+          () => {
+            this.conformCURP();
+          }
+        );
+      });
+    } catch (err) {
+      this.setState({ claveEstado: "", estadoNacimiento: "" });
+    }
+  };
+
+  conformCURP() {
+    try {
+      var subsPaterno = this.state.paterno;
+      var subsMaterno = this.state.materno;
+      var susbsNombres = this.state.nombres;
+
+      var mes = moment.utc(this.state.fecha_nacimiento).format("MM");
+      var anio = moment.utc(this.state.fecha_nacimiento).format("YY");
+      var dia = moment.utc(this.state.fecha_nacimiento).format("DD");
+      var sexo;
+      var estado = this.state.claveEstado;
+      this.state.sexo === "Masculino" ? (sexo = "H") : (sexo = "M");
+
+      var consonantsPaterno = subsPaterno.match(/[^aeiou$]/gi);
+      var substrPaternoC = "";
+      consonantsPaterno.forEach(item => {
+        substrPaternoC = substrPaternoC + item;
+      });
+
+      var consonantsMaterno = subsMaterno.match(/[^aeiou$]/gi);
+      var substrMaternoC = "";
+      consonantsMaterno.forEach(item => {
+        substrMaternoC = substrMaternoC + item;
+      });
+
+      var consonantsNombres = susbsNombres.match(/[^aeiou$]/gi);
+      var substrNombresC = "";
+      consonantsNombres.forEach(item => {
+        substrNombresC = substrNombresC + item;
+      });
+
+      var CURP =
+        subsPaterno.substr(0, 2) +
+        subsMaterno.substr(0, 1) +
+        susbsNombres.substr(0, 1) +
+        anio +
+        mes +
+        dia +
+        sexo +
+        estado +
+        substrPaternoC.substr(1, 1) +
+        substrMaternoC.substr(1, 1) +
+        substrNombresC.substr(0, 1);
+
+      var RFC =
+        subsPaterno.substr(0, 2) +
+        subsMaterno.substr(0, 1) +
+        susbsNombres.substr(0, 1) +
+        anio +
+        mes +
+        dia;
+
+      CURP.length > 18
+        ? console.log()
+        : this.setState({
+            CURP: CURP.toUpperCase(),
+            RFC: RFC.toUpperCase()
+          });
+    } catch (err) {}
+  }
+
   handleChangeMunicipio = e => {
     try {
       this.setState({ municipio: e.label }, async () => {
@@ -263,29 +355,28 @@ class Llamada_General extends Component {
 
     this.setState({ isSaving: true });
 
-    this.API_CCS.insertGeneral(this.state)
-      .then(res => {
-        MySwal.fire({
-          title: "¡Correcto!",
-          html: "¡Se levanto el guardo el registro correctamente!",
-          type: "success",
-          confirmButtonText: "OK",
-          confirmButtonColor: "#C00327",
-          allowOutsideClick: false
-        });
-        this.setState({ isSaving: false });
-        this.props.history.replace("/Inicio");
-      })
-      .catch(err => {
-        MySwal.fire({
-          title: "Error",
-          text:
-            "Ocurrio un error al guardar el registro, por favor intenta de nuevo",
-          type: "error",
-          confirmButtonColor: "#C00327",
-          allowOutsideClick: true
-        });
-      });
+    MySwal.fire({
+      title: "¡Correcto!",
+      html: "¡Se levanto el guardo el registro correctamente!",
+      type: "success",
+      confirmButtonText: "OK",
+      confirmButtonColor: "#C00327",
+      allowOutsideClick: false
+    });
+
+    document.getElementById("formReclu").reset();
+
+    this.setState({
+      cp: "",
+      estado: "",
+      municipio: "",
+      colonia: "",
+      municipios: [],
+      colonias: [],
+      estadoNacimiento: "",
+      CURP: "",
+      RFC: ""
+    });
 
     this.setState({ isSaving: false });
   }
@@ -314,7 +405,6 @@ class Llamada_General extends Component {
           </AppHeader>
 
           <main className="main">
-   
             <AppBreadcrumb appRoutes={routes} router={router} />
             <Container fluid>
               <Suspense fallback={this.loading()}>
@@ -329,6 +419,7 @@ class Llamada_General extends Component {
                       onSubmit={this.handleFormSubmit}
                       innerRef={this.formRef}
                       autoComplete="off"
+                      id="formReclu"
                     >
                       <Row>
                         <Col className="col-sm-4">
@@ -361,6 +452,7 @@ class Llamada_General extends Component {
                             <Input
                               type="text"
                               placeholder="Apellido Materno"
+                              required
                               onChange={this.handleChange}
                               id="materno"
                             />
@@ -369,7 +461,7 @@ class Llamada_General extends Component {
                       </Row>
 
                       <Row>
-                        <Col className="col-sm-4">
+                        <Col className="col-sm-3">
                           <FormGroup>
                             <Label htmlFor="prospecto">Sexo</Label>
                             <Input
@@ -385,7 +477,7 @@ class Llamada_General extends Component {
                             </Input>
                           </FormGroup>
                         </Col>
-                        <Col className="col-sm-4">
+                        <Col className="col-sm-3">
                           <FormGroup>
                             <Label htmlFor="prospecto">
                               Fecha de Nacimiento
@@ -401,12 +493,43 @@ class Llamada_General extends Component {
                             />
                           </FormGroup>
                         </Col>
-                        <Col className="col-sm-4">
+                        <Col className="col-sm-3">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">
+                              Lugar de Nacimiento
+                            </Label>
+                            <Select
+                              options={estados}
+                              styles={customStyles}
+                              isClearable={true}
+                              placeholder={"-Selecciona-"}
+                              theme={theme}
+                              onChange={this.handleChangeEstadoNacimiento}
+                              value={
+                                this.state.estadoNacimiento === ""
+                                  ? null
+                                  : {
+                                      label: this.state.estadoNacimiento,
+                                      value: this.state.estadoNacimiento
+                                    }
+                              }
+                            />
+                            <input
+                              tabIndex={-1}
+                              style={{ opacity: 0, height: 0 }}
+                              onChange={e => {}}
+                              value={this.state.estadoNacimiento}
+                              required
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col className="col-sm-3">
                           <FormGroup>
                             <Label htmlFor="prospecto">Estado Civil</Label>
                             <Input
                               type="select"
                               placeholder="Categoría"
+                              required
                               onChange={this.handleChange}
                               id="edo_civil"
                             >
@@ -420,7 +543,94 @@ class Llamada_General extends Component {
                           </FormGroup>
                         </Col>
                       </Row>
-
+                      <Row>
+                        <Col className="col-sm-4">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">CURP</Label>
+                            <Input
+                              type="text"
+                              placeholder="CURP"
+                              required
+                              onChange={this.handleChange}
+                              id="CURP"
+                              value={this.state.CURP}
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col className="col-sm-4">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">RFC</Label>
+                            <Input
+                              type="text"
+                              placeholder="RFC"
+                              required
+                              onChange={this.handleChange}
+                              id="RFC"
+                              value={this.state.RFC}
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col className="col-sm-4">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">NSS</Label>
+                            <Input
+                              type="text"
+                              required
+                              placeholder="NSS"
+                              onChange={this.handleChange}
+                              id="NSS"
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col className="col-sm-6">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">
+                              Dependientes Economicos
+                            </Label>
+                            <Input
+                              type="select"
+                              placeholder="Categoría"
+                              required
+                              onChange={this.handleChange}
+                              id="dependientes"
+                            >
+                              <option value="">-Selecciona-</option>
+                              <option>0</option>
+                              <option>1</option>
+                              <option>2</option>
+                              <option>3</option>
+                              <option>4</option>
+                              <option>5</option>
+                              <option>6</option>
+                              <option>7</option>
+                              <option>8</option>
+                              <option>9</option>
+                            </Input>
+                          </FormGroup>
+                        </Col>
+                        <Col className="col-sm-6">
+                          <FormGroup>
+                            <Label htmlFor="prospecto">Escolaridad</Label>
+                            <Input
+                              type="select"
+                              required
+                              placeholder="Categoría"
+                              onChange={this.handleChange}
+                              id="escolaridad"
+                            >
+                              <option value="">-Selecciona-</option>
+                              <option>Secundaria</option>
+                              <option>Bachillerato Trunco</option>
+                              <option>Bachillerato</option>
+                              <option>Carrera Técnica</option>
+                              <option>Licenciatura Trunca</option>
+                              <option>Licenciatura</option>
+                            </Input>
+                          </FormGroup>
+                        </Col>
+                      </Row>
                       <Row>
                         <Col className="col-sm-2">
                           <FormGroup>
@@ -428,6 +638,7 @@ class Llamada_General extends Component {
                             <Input
                               type="select"
                               placeholder="Categoría"
+                              required
                               onChange={this.handleChange}
                               id="tipo_vial"
                             >
@@ -468,6 +679,7 @@ class Llamada_General extends Component {
                             <Input
                               type="text"
                               placeholder="Calle"
+                              required
                               onChange={this.handleChange}
                               id="calle"
                             />
@@ -479,6 +691,7 @@ class Llamada_General extends Component {
                             <Input
                               type="text"
                               placeholder="Ext."
+                              required
                               onChange={this.handleChange}
                               id="exterior"
                             />
@@ -490,6 +703,7 @@ class Llamada_General extends Component {
                             <Input
                               type="text"
                               placeholder="Int."
+                              required
                               onChange={this.handleChange}
                               id="interior"
                             />
@@ -504,6 +718,7 @@ class Llamada_General extends Component {
                             <Input
                               type="text"
                               placeholder="Entrecalles"
+                              required
                               onChange={this.handleChange}
                               id="entrecalles"
                             />
@@ -519,6 +734,7 @@ class Llamada_General extends Component {
                               type="number"
                               pattern="[0-9]{10}"
                               placeholder="CP"
+                              required
                               onChange={this.handleChangeCP}
                               value={this.state.cp}
                               id="cp"
@@ -545,6 +761,13 @@ class Llamada_General extends Component {
                                     }
                               }
                             />
+                            <input
+                              tabIndex={-1}
+                              style={{ opacity: 0, height: 0 }}
+                              onChange={e => {}}
+                              value={this.state.colonia}
+                              required
+                            />
                           </FormGroup>
                         </Col>
                         <Col className="col-sm-3">
@@ -567,6 +790,13 @@ class Llamada_General extends Component {
                                       value: this.state.municipio
                                     }
                               }
+                            />
+                            <input
+                              tabIndex={-1}
+                              style={{ opacity: 0, height: 0 }}
+                              onChange={e => {}}
+                              value={this.state.municipio}
+                              required
                             />
                           </FormGroup>
                         </Col>
@@ -595,7 +825,7 @@ class Llamada_General extends Component {
                               style={{ opacity: 0, height: 0 }}
                               onChange={e => {}}
                               value={this.state.estado}
-                              required={false}
+                              required
                             />
                           </FormGroup>
                         </Col>
@@ -623,6 +853,7 @@ class Llamada_General extends Component {
                               type="text"
                               pattern="[0-9]{10}"
                               placeholder="5555555555"
+                              required
                               onChange={this.handleChange}
                               id="tel_2"
                             />
@@ -634,8 +865,9 @@ class Llamada_General extends Component {
                             <Input
                               type="email"
                               placeholder="Email"
+                              required
                               onChange={this.handleChange}
-                              id="email_1"
+                              id="email"
                             />
                           </FormGroup>
                         </Col>
