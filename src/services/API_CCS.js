@@ -119,7 +119,7 @@ export default class API_CCS {
     var fecha = moment.utc(state.fecha_nacimiento).format("DD/MM/YYYY");
     return this.fetchAnonimo(
       hostURLProd +
-        "/v1/personal/candidatos?nombres=" +
+        "/v1/personal/candidato?nombres=" +
         state.nombres +
         "&paterno=" +
         state.paterno +
