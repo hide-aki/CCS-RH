@@ -1,4 +1,6 @@
 import AuthService from "./AuthService";
+import moment from "moment";
+import "moment/locale/es";
 
 const hostURLProd = "https://api.ccscontactcenter.com";
 // eslint-disable-next-line
@@ -105,11 +107,28 @@ export default class API_CCS {
   }
 
   insertCandidato(state) {
+    return this.fetchAnonimo(hostURLProd + "/v1/personal/candidatos", {
+      method: "POST",
+      body: JSON.stringify(state)
+    }).then(res => {
+      return Promise.resolve(res);
+    });
+  }
+
+  getCandidato(state) {
+    var fecha = moment.utc(state.fecha_nacimiento).format("DD/MM/YYYY");
     return this.fetchAnonimo(
-      hostURLProd + "/v1/personal/candidatos",
+      hostURLProd +
+        "/v1/personal/candidatos?nombres=" +
+        state.nombres +
+        "&paterno=" +
+        state.paterno +
+        "&materno=" +
+        state.materno +
+        "&fecha=" +
+        fecha,
       {
-        method: "POST",
-        body: JSON.stringify(state)
+        method: "GET"
       }
     ).then(res => {
       return Promise.resolve(res);

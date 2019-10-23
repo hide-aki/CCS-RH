@@ -406,73 +406,107 @@ class Llamada_General extends Component {
     }
   };
 
-  handleFormSubmit(e) {
+  async handleFormSubmit(e) {
     e.preventDefault();
 
     this.setState({ isSaving: true });
 
-    this.API_CCS.insertCandidato(this.state)
-      .then(res => {
-        MySwal.fire({
-          title: "¡Correcto!",
-          html: "¡Se guardó el registro correctamente!",
-          type: "success",
-          confirmButtonText: "OK",
-          confirmButtonColor: "#C00327",
-          allowOutsideClick: false
+    var datos = await this.API_CCS.getCandidato(this.state);
+
+    if (datos.length === 0) {
+      this.API_CCS.insertCandidato(this.state)
+        .then(res => {
+          MySwal.fire({
+            title: "¡Correcto!",
+            html: "¡Se guardó el registro correctamente!",
+            type: "success",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#C00327",
+            allowOutsideClick: false
+          });
+
+          document.getElementById("formReclu").reset();
+
+          this.setState({
+            cp: "",
+            estado: "",
+            municipio: "",
+            colonia: "",
+            municipios: [],
+            colonias: [],
+            estadoNacimiento: "",
+            CURP: "",
+            RFC: "",
+            nombres: "",
+            paterno: "",
+            materno: "",
+            fecha_nacimiento: "",
+            sexo: ""
+          });
+
+          this.setState({ isSaving: false });
+        })
+        .catch(err => {
+          MySwal.fire({
+            title: "Error!",
+            html: "¡Ocurrió un error! <br/> (" + err + ")",
+            type: "error",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#C00327",
+            allowOutsideClick: false
+          });
+
+          document.getElementById("formReclu").reset();
+
+          this.setState({
+            cp: "",
+            estado: "",
+            municipio: "",
+            colonia: "",
+            municipios: [],
+            colonias: [],
+            estadoNacimiento: "",
+            CURP: "",
+            RFC: "",
+            nombres: "",
+            paterno: "",
+            materno: "",
+            fecha_nacimiento: "",
+            sexo: ""
+          });
+          this.setState({ isSaving: false });
         });
+    } else {
 
-        document.getElementById("formReclu").reset();
-
-        this.setState({
-          cp: "",
-          estado: "",
-          municipio: "",
-          colonia: "",
-          municipios: [],
-          colonias: [],
-          estadoNacimiento: "",
-          CURP: "",
-          RFC: "",
-          nombres: "",
-          paterno: "",
-          materno: "",
-          fecha_nacimiento: "",
-          sexo: ""
-        });
-
-        this.setState({ isSaving: false });
-      })
-      .catch(err => {
-        MySwal.fire({
-          title: "Error!",
-          html: "¡Ocurrió un error! <br/> (" + err + ")",
-          type: "error",
-          confirmButtonText: "OK",
-          confirmButtonColor: "#C00327",
-          allowOutsideClick: false
-        });
-
-        document.getElementById("formReclu").reset();
-
-        this.setState({
-          cp: "",
-          estado: "",
-          municipio: "",
-          colonia: "",
-          municipios: [],
-          colonias: [],
-          estadoNacimiento: "",
-          CURP: "",
-          RFC: "",
-          nombres: "",
-          paterno: "",
-          materno: "",
-          fecha_nacimiento: "",
-          sexo: ""
-        });
-        this.setState({ isSaving: false });
+      MySwal.fire({
+        title: "Error!",
+        html: "¡Ya te encuentras registrado o tienes un homonimo! <br/> <br/> Notificalo a RRHH",
+        type: "error",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#C00327",
+        allowOutsideClick: false
       });
+
+     
+
+      this.setState({
+        cp: "",
+        estado: "",
+        municipio: "",
+        colonia: "",
+        municipios: [],
+        colonias: [],
+        estadoNacimiento: "",
+        CURP: "",
+        RFC: "",
+        nombres: "",
+        paterno: "",
+        materno: "",
+        fecha_nacimiento: "",
+        sexo: ""
+      });
+      this.setState({ isSaving: false });
+    }
 
     this.setState({ isSaving: false });
   }
