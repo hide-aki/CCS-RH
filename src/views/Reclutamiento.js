@@ -103,6 +103,44 @@ const estados = [
   { value: "Zacatecas", label: "Zacatecas" }
 ];
 
+const estados2 = [
+  { value: "Aguascalientes", label: "Aguascalientes" },
+  { value: "Baja California", label: "Baja California" },
+  { value: "Baja California Sur", label: "Baja California Sur" },
+  { value: "Campeche", label: "Campeche" },
+  { value: "Chiapas", label: "Chiapas" },
+  { value: "Chihuahua", label: "Chihuahua" },
+  { value: "Coahuila de Zaragoza", label: "Coahuila de Zaragoza" },
+  { value: "Colima", label: "Colima" },
+  { value: "Distrito Federal", label: "Distrito Federal" },
+  { value: "Durango", label: "Durango" },
+  { value: "Guanajuato", label: "Guanajuato" },
+  { value: "Guerrero", label: "Guerrero" },
+  { value: "Hidalgo", label: "Hidalgo" },
+  { value: "Jalisco", label: "Jalisco" },
+  { value: "México", label: "México" },
+  { value: "Michoacán de Ocampo", label: "Michoacán de Ocampo" },
+  { value: "Morelos", label: "Morelos" },
+  { value: "Nayarit", label: "Nayarit" },
+  { value: "Nuevo León", label: "Nuevo León" },
+  { value: "Oaxaca", label: "Oaxaca" },
+  { value: "Puebla", label: "Puebla" },
+  { value: "Querétaro", label: "Querétaro" },
+  { value: "Quintana Roo", label: "Quintana Roo" },
+  { value: "San Luis Potosí", label: "San Luis Potosí" },
+  { value: "Sinaloa", label: "Sinaloa" },
+  { value: "Sonora", label: "Sonora" },
+  { value: "Tabasco", label: "Tabasco" },
+  { value: "Tamaulipas", label: "Tamaulipas" },
+  { value: "Tlaxcala", label: "Tlaxcala" },
+  {
+    value: "Veracruz de Ignacio de la Llave",
+    label: "Veracruz de Ignacio de la Llave"
+  },
+  { value: "Yucatán", label: "Yucatán" },
+  { value: "Zacatecas", label: "Zacatecas" },
+  { value: "Extranjero", label: "Extranjero" }
+];
 const brandPrimary = getStyle("--primary");
 
 const MySwal = withReactContent(Swal);
@@ -155,12 +193,16 @@ class Llamada_General extends Component {
   }
 
   handleChange(e) {
+    var control = e.target.id;
     this.setState(
       {
         [e.target.id]: e.target.value
       },
       () => {
-        this.conformCURP();
+        if (control === "CURP" || control === "RFC") {
+        } else {
+          this.conformCURP();
+        }
       }
     );
   }
@@ -506,7 +548,7 @@ class Llamada_General extends Component {
                               Lugar de Nacimiento
                             </Label>
                             <Select
-                              options={estados}
+                              options={estados2}
                               styles={customStyles}
                               isClearable={true}
                               placeholder={"-Selecciona-"}
@@ -891,7 +933,8 @@ class Llamada_General extends Component {
                   </CardBody>
                 </Card>
               </Suspense>
-              <br /><br />
+              <br />
+              <br />
               <AppFooter fixed>
                 <DefaultFooter />
               </AppFooter>
