@@ -20,12 +20,19 @@ import { getStyle } from "@coreui/coreui/dist/js/coreui-utilities";
 import Select from "react-select";
 import * as router from "react-router-dom";
 import routes from "../routes";
-import { AppHeader, AppBreadcrumb2 as AppBreadcrumb } from "@coreui/react";
+import {
+  AppHeader,
+  AppBreadcrumb2 as AppBreadcrumb,
+  AppFooter
+} from "@coreui/react";
 import moment from "moment";
 import "moment/locale/es";
 
 const DefaultHeader = React.lazy(() =>
   import("../containers/DefaultLayout/LoggedOutHeader")
+);
+const DefaultFooter = React.lazy(() =>
+  import("../containers/DefaultLayout/DefaultFooter")
 );
 
 const brandColor = "#fc4669";
@@ -884,6 +891,10 @@ class Llamada_General extends Component {
                   </CardBody>
                 </Card>
               </Suspense>
+              <br /><br />
+              <AppFooter fixed>
+                <DefaultFooter />
+              </AppFooter>
             </Container>
           </main>
         </div>
