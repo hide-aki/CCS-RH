@@ -103,9 +103,14 @@ class Login extends Component {
           <FABButton
             tooltip="Formulario de Reclutamiento"
             icon="icon-list"
-            rotate={true}
+            rotate
             onClick={() => (window.location.href = "/Reclutamiento")}
-            styles={{ backgroundColor: "rgba(192,3,39,0.8)", color: "white" }}
+            styles={{
+              backgroundColor: "rgba(192,3,39,0.8)",
+              color: "white",
+              width: 40,
+              height: 40
+            }}
           />
         </FABContainer>
         <Container>
