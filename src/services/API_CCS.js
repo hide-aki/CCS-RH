@@ -134,4 +134,12 @@ export default class API_CCS {
       return Promise.resolve(res);
     });
   }
+
+  getCandidatos() {
+    return this.fetchAnonimo(hostURLProd + "/v1/personal/candidatos", {
+      method: "GET"
+    }).then(res => {
+      return Promise.resolve(res);
+    });
+  }
 }
